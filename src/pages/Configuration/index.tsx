@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text,  ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { database } from '../../config/firebase';
 import { ref, set, get } from "firebase/database";
 import PickerCustom from '../../components/Picker';
@@ -7,6 +7,7 @@ import { shapes, directions } from '../../constants';
 import ColorPicker from 'react-native-wheel-color-picker';
 import { useUser } from '../../context/User';
 import { Button } from '../../components/Button';
+import Toast from 'react-native-toast-message'
 
 export default function SettingsPage() {
     const [shape, setShape] = useState<string>('cone');
@@ -40,6 +41,7 @@ export default function SettingsPage() {
                 setShape(data.shape);
                 setColor(data.color);
                 setRotation(data.rotation);
+
             }
         } catch (error) {
             console.error("Erro ao carregar configurações:", error);
@@ -54,6 +56,14 @@ export default function SettingsPage() {
                 const settingsRef = ref(database, `users/${uid}/settings/${shape}`);
 
                 await set(settingsRef, { shape, color, rotation: rotation });
+                Toast.show({
+                    type: 'success',
+                    text1: 'Salvo com sucesso',
+                    position: 'bottom',
+                    topOffset: 60,
+                    visibilityTime: 3000,
+                    autoHide: true,
+                });
                 setLoad(false)
             }
         } catch (error) {
@@ -63,8 +73,9 @@ export default function SettingsPage() {
 
     return (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-
+            <Toast />
             <View style={styles.section}>
+
                 <Text accessibilityLabel="Escolha a forma do objeto" style={styles.label}>Forma:</Text>
                 <PickerCustom
                     data={shapes}
@@ -121,7 +132,7 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         alignItems: 'center',
         padding: 20,
-        marginTop: 20
+        marginTop: 15
     },
     label: {
         fontSize: 16,

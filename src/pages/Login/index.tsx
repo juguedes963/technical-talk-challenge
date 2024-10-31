@@ -14,7 +14,7 @@ export default function LoginPage() {
     const [load, setLoad] = useState<boolean>(false)
     const navigation = useNavigation<IStackRoutes>()
     const [isNavigationReady, setNavigationReady] = useState(false);
-    const { user, setUser } = useUser();
+    const { setUser } = useUser();
 
     useEffect(() => {
         const timeout = setTimeout(() => {
@@ -27,12 +27,6 @@ export default function LoginPage() {
         try {
             setLoad(true)
             const { user } = await signInWithEmailAndPassword(auth, email, password)
-            /*usuarios 
-            login ->teste1@gmail.com
-            senha -> cavalo01
-            login ->teste2@gmail.com   
-            senha -> cavalo01
-            */
             setUser(user)
             isNavigationReady && navigation.navigate('Home')
         } catch (err: any) {
